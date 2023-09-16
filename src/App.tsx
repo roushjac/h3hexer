@@ -1,10 +1,19 @@
-import './App.css'
-import MapComponent from './components/MapComponent';
+import { MapContainer, TileLayer} from "react-leaflet";
 
-function App() {
+const App = () => {
   return (
-    <MapComponent />
-  )
-}
+    <MapContainer
+      center={[38.505, -95.09]}
+      zoom={5}
+      scrollWheelZoom={true}
+      style={{ minHeight: "100vh", minWidth: "100vw" }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+    </MapContainer>
+  );
+};
 
 export default App;

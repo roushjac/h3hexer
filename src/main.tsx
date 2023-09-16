@@ -1,7 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import "./index.css";
+import App from "./App";
+import "leaflet/dist/leaflet.css";
+
 import { RecoilRoot } from 'recoil';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -9,5 +12,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <RecoilRoot>
       <App />
     </RecoilRoot>
-  </React.StrictMode>,
+  </React.StrictMode>
 )
