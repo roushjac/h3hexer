@@ -9,12 +9,11 @@ const FileUploader: React.FC = () => {
 
     const props = {
         beforeUpload: (file: any) => {
-            // Process the file or read it here
             const reader = new FileReader();
             reader.onload = (e) => {
                 const content = e.target?.result;
-                // Do something with the content
-                console.log(content);
+                setFileContent(content);
+                console.log(fileContent);
             };
             reader.readAsText(file);
 
