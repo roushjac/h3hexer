@@ -1,27 +1,16 @@
-# React + TypeScript + Vite
+# h3hexer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+h3hexer is a website that spatially indexes geographic data into Uber's [H3 index](https://h3geo.org/).
 
-Currently, two official plugins are available:
+### Why H3?
+H3 allows for multiple datasets of different geometry types to be easily joined together into a single dataset. Analysis of indexed data is simplified and made extremely performant by the H3 core library which contains algorithms for spatial aggregation, nearest neighbors, shortest path, and more.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Data sources
+- Local or remote URI to any GeoJSON dataset
+- Esri REST API services
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Technologies used
+- React
+- Leaflet
+- Recoiljs (state management)
+- Vite (build tool and bundling)
