@@ -1,37 +1,40 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { useRecoilState } from 'recoil';
+import { fileContentState } from '../state/uploadFileContentState';
 
 const FileUploader: React.FC = () => {
-  const props = {
-    beforeUpload: (file: any) => {
-      // Process the file or read it here
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result;
-        // Do something with the content
-        console.log(content);
-      };
-      reader.readAsText(file);
+    const [fileContent, setFileContent] = useRecoilState(fileContentState);
 
-      // Prevent automatic upload by returning false
-      return false;
-    },
-    onChange(info: any) {
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
+    const props = {
+        beforeUpload: (file: any) => {
+            // Process the file or read it here
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target?.result;
+                // Do something with the content
+                console.log(content);
+            };
+            reader.readAsText(file);
 
-  return (
-    <Upload {...props}>
-      <Button icon={<UploadOutlined />}>Upload File</Button>
-    </Upload>
-  );
+            // Prevent automatic upload by returning false
+            return false;
+        },
+        onChange(info: any) {
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        }
+    };
+
+    return (
+        <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Upload File</Button>
+        </Upload>
+    );
 };
 
 export default FileUploader;
-
