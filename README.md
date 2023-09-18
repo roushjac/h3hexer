@@ -14,3 +14,4 @@ H3 allows for multiple datasets of different geometry types to be easily joined 
 - Leaflet
 - Recoiljs (state management)
 - Vite (build tool and bundling)
+- Antd (React components)

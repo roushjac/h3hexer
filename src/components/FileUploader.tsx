@@ -1,29 +1,37 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
+import { Upload, Button, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 const FileUploader: React.FC = () => {
-
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+  const props = {
+    beforeUpload: (file: any) => {
+      // Process the file or read it here
       const reader = new FileReader();
-
-      reader.onload = (event) => {
-        const result = event.target?.result;
-        if (typeof result === 'string') {
-          // Process the file content
-          console.log(result);
-        }
+      reader.onload = (e) => {
+        const content = e.target?.result;
+        // Do something with the content
+        console.log(content);
       };
-
       reader.readAsText(file);
-    }
+
+      // Prevent automatic upload by returning false
+      return false;
+    },
+    onChange(info: any) {
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleFileUpload} />
-    </div>
+    <Upload {...props}>
+      <Button icon={<UploadOutlined />}>Upload File</Button>
+    </Upload>
   );
 };
 
 export default FileUploader;
+
