@@ -2,13 +2,15 @@ import React, { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import FileUploader from './FileUploader';
 import L from 'leaflet';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+
 
 const createFileUploaderControl = (FileUploaderComponent: React.FC) => {
   return L.Control.extend({
     onAdd: function() {
       const div = L.DomUtil.create('div', '');
-      ReactDOM.render(<FileUploaderComponent />, div);
+      const root = createRoot(div)
+      root.render(<FileUploaderComponent />)
       return div;
     },
   });
