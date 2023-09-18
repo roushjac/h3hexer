@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer} from "react-leaflet";
+import FileUploaderControl from "./components/FileUploaderControl";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <FileUploaderControl />
     </MapContainer>
   );
 };
