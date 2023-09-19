@@ -1,22 +1,18 @@
-// @ts-nocheck https://github.com/Turfjs/turf/issues/2438
 import React from 'react';
 import { Polygon } from 'react-leaflet';
-import { FeatureCollection } from '@turf/turf';
+import { useRecoilValue } from 'recoil';
+import { CoordPair } from 'h3-js';
+import { hexPolygonsState } from '../state/hexPolygonsState';
 
-type Props = {
-    hexagonData: FeatureCollection;
-};
+const HexagonLayer: React.FC = () => {
+    const hexFeatures = useRecoilValue(hexPolygonsState);
 
-const HexagonLayer: React.FC<Props> = ({ hexagonFeatures }) => {
     return (
         <>
-            {hexagonFeatures.features.map((feature, index) => (
-                <Polygon
-                    key={index}
-                    positions={feature.geometry.coordinates[0]}
-                    color="blue"
-                />
-            ))}
+            {hexFeatures &&
+                hexFeatures.map((feature: CoordPair[][], index: number) => (
+                    <Polygon key={index} positions={feature} color="blue" />
+                ))}
         </>
     );
 };
