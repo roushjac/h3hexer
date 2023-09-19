@@ -1,11 +1,11 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { useRecoilState } from 'recoil';
-import { fileContentState } from '../state/uploadFileContentState';
+import { useSetRecoilState } from 'recoil';
+import { fileContentState } from '../state/fileContentState';
 
 const FileUploader: React.FC = () => {
-    const [fileContent, setFileContent] = useRecoilState(fileContentState);
+    const setFileContent = useSetRecoilState(fileContentState);
 
     const props = {
         beforeUpload: (file: any) => {
@@ -13,7 +13,6 @@ const FileUploader: React.FC = () => {
             reader.onload = (e) => {
                 const content = e.target?.result;
                 setFileContent(content);
-                console.log(fileContent);
             };
             reader.readAsText(file);
 

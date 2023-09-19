@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import FileUploader from './FileUploader'; // Directly import FileUploader
+import FileUploader from './FileUploader';
 import '../styles/ControlsContainer.css';
 import { RecoilRoot } from 'recoil';
 
@@ -26,7 +26,6 @@ const ToolComponents: React.FC = () => {
     let control: any = null;
 
     useEffect(() => {
-        // Wrap FileUploader and other child components inside Container
         const components = (
             <RecoilRoot>
                 <ControlsContainer>
