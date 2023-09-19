@@ -8,9 +8,9 @@ import 'leaflet/dist/leaflet.css';
 import { RecoilRoot } from 'recoil';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <RecoilRoot>
+    <RecoilRoot>
+        <React.StrictMode>
             <App />
-        </RecoilRoot>
-    </React.StrictMode>
+        </React.StrictMode>
+    </RecoilRoot>
 );

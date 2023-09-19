@@ -4,7 +4,6 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import FileUploader from './FileUploader';
 import '../styles/ControlsContainer.css';
-import { RecoilRoot } from 'recoil';
 
 const ControlsContainer: React.FC<React.PropsWithChildren> = ({ children }) => {
     return <div className="container">{children}</div>;
@@ -27,12 +26,10 @@ const ToolComponents: React.FC = () => {
 
     useEffect(() => {
         const components = (
-            <RecoilRoot>
-                <ControlsContainer>
-                    <FileUploader />
-                    {/* Add other components here */}
-                </ControlsContainer>
-            </RecoilRoot>
+            <ControlsContainer>
+                <FileUploader />
+                {/* Add other components here */}
+            </ControlsContainer>
         );
 
         const LeafletControl = createControl(components);
