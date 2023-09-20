@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fileContentState } from './state/fileContentState';
 import { hexPolygonsState } from './state/hexPolygonsState';
-import { h3PolyfillGeoJSON } from './utils/h3';
+import { geoJsonToh3PolygonFeatures } from './utils/h3';
 import HexagonLayer from './components/HexagonLayer';
 import ToolComponents from './components/ControlsContainer';
 import './App.css';
@@ -13,9 +13,8 @@ const App: React.FC = () => {
     const setHexData = useSetRecoilState(hexPolygonsState);
 
     useEffect(() => {
-        console.log('fileContent has been updated:', fileContent);
         if (fileContent) {
-            const h3Polygons = h3PolyfillGeoJSON(fileContent);
+            const h3Polygons = geoJsonToh3PolygonFeatures(fileContent, 9);
             setHexData(h3Polygons);
         }
     }, [fileContent]);

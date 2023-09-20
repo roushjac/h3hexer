@@ -1,58 +1,73 @@
 import * as h3 from 'h3-js';
-import { Feature, FeatureCollection, MultiPolygon } from 'geojson';
+import { Feature, GeoJson } from '../types/geojson';
 
-export const h3PolyfillGeoJSON = (geoJSONString: string) => {
-    const geoJSON = JSON.parse(geoJSONString);
-    const resolution = 9;
-    let allH3Indexes: string[] = [];
-
-    geoJSON.features.forEach((feature: any) => {
-        const coordinates = feature.geometry.coordinates;
-        const oneFeatureIndexes = h3.polygonToCells(
-            coordinates[0],
-            resolution,
-            true
-        );
-        allH3Indexes = [...allH3Indexes, ...oneFeatureIndexes];
-    });
-
-    // Convert H3 hexagons to multipolygon coordinates
-    const h3Polygons = h3.cellsToMultiPolygon(allH3Indexes, false);
-
-    return h3Polygons;
-};
-
-type CoordPair = [number, number]; // Latitude, Longitude
-type h3CoordSet = CoordPair[][]; // Multiple polygons, each with multiple coordinates
+interface H3DataItem {
+    h3Indexes: string[];
+    properties: Record<string, any>;
+}
 
 /**
- * Convert h3.CoordPair[][][] to GeoJSON MultiPolygon FeatureCollection
- * @param {h3CoordSet[]} h3Coords - List of h3CoordSets
- * @returns {FeatureCollection<MultiPolygon>} - GeoJSON MultiPolygon FeatureCollection
+ * Get an array of objects where each object represents a GeoJSON feature
+ * and contains its properties and H3 indexes that fill it.
+ *
+ * @param {string} geoJsonStr - The GeoJSON string
+ * @param {number} res - The H3 resolution
+ * @returns {H3DataItem[]} - The array of objects
  */
-export const h3ToGeoJSON = (
-    h3Coords: h3CoordSet[]
-): FeatureCollection<MultiPolygon> => {
-    const features: Array<Feature<MultiPolygon>> = h3Coords.map(
-        (polygon, index) => {
-            // Flip lat and lon for each vertex. Need this because h3 uses lat/lon by default, geojson needs lon/lat
-            const flippedPolygon = polygon.map((ring) =>
-                ring.map((coordPair) => [coordPair[1], coordPair[0]])
-            );
+const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem[] => {
+    const geoJson: GeoJson = JSON.parse(geoJsonStr);
+    return geoJson.features.map((feature) => {
+        const coordinates = feature.geometry.coordinates;
+        const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
+        return {
+            h3Indexes,
+            properties: feature.properties
+        };
+    });
+};
 
-            return {
+/**
+ * Transform the H3 data objects to a new GeoJSON object.
+ *
+ * @param {H3DataItem[]} h3Data - The H3 data from geoJsonToH3Data
+ * @returns {GeoJson} - The new GeoJSON object
+ */
+const h3DataToGeoJson = (h3Data: H3DataItem[]): GeoJson => {
+    const newFeatures: Feature[] = [];
+
+    h3Data.forEach((data) => {
+        const { h3Indexes, properties } = data;
+        h3Indexes.forEach((h3Index) => {
+            const boundary = h3.cellToBoundary(h3Index, true); // true for GeoJSON format ([lng, lat])
+            const polygon: Feature = {
                 type: 'Feature',
-                properties: { id: index },
                 geometry: {
-                    type: 'MultiPolygon',
-                    coordinates: [flippedPolygon] // Wrap it in an additional array to comply with the MultiPolygon structure
+                    type: 'Polygon',
+                    coordinates: [boundary]
+                },
+                properties: {
+                    ...properties,
+                    h3Index
                 }
             };
-        }
-    );
+            newFeatures.push(polygon);
+        });
+    });
 
     return {
         type: 'FeatureCollection',
-        features
+        features: newFeatures
     };
+};
+
+/**
+ * Wrapper function to turn a geojson into a geojson of hex polygon features
+ */
+
+export const geoJsonToh3PolygonFeatures = (
+    geoJsonStr: string,
+    res: number
+): GeoJson => {
+    const h3Items: H3DataItem[] = geoJsonToH3Data(geoJsonStr, res);
+    return h3DataToGeoJson(h3Items);
 };

@@ -1,7 +1,7 @@
-import { CoordPair } from 'h3-js';
+import { GeoJson } from '../types/geojson';
 import { atom } from 'recoil';
 
-export const hexPolygonsState = atom<CoordPair[][][] | null>({
+export const hexPolygonsState = atom<GeoJson | null>({
     key: 'hexPolygonsState',
     default: null
 });
