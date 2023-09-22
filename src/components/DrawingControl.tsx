@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
 
 const DrawingControl: React.FC = () => {
     const map = useMap();
+    const drawControlRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const drawControl = new L.Control.Draw({
@@ -16,7 +17,18 @@ const DrawingControl: React.FC = () => {
                 marker: false
             }
         });
-        map.addControl(drawControl);
+
+        const drawControlContainer = L.DomUtil.create(
+            'div',
+            'leaflet-draw-container'
+        );
+        if (drawControlContainer) {
+            //@ts-ignore
+            drawControlContainer.appendChild(drawControl.onAdd(map));
+        }
+        if (drawControlRef.current) {
+            drawControlRef.current.appendChild(drawControlContainer);
+        }
 
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer = (e as any).layer;
@@ -31,7 +43,7 @@ const DrawingControl: React.FC = () => {
         };
     }, [map]);
 
-    return null; // The component does not render anything visible
+    return <div ref={drawControlRef} className="drawing-control-container" />;
 };
 
 export default DrawingControl;
