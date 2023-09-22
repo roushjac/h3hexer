@@ -11,8 +11,6 @@ const DrawingControl: React.FC = () => {
         const drawControl = new L.Control.Draw({
             draw: {
                 polyline: false,
-                circle: false,
-                rectangle: false,
                 circlemarker: false,
                 marker: false
             }
