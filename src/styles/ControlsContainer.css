@@ -10,17 +10,24 @@
 }
 
 .leaflet-draw-container {
-  clear: none;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
   margin: 10px 0 10px 0;
 }
 
-.drawing-control-container {
-  clear: none;
+.leaflet-draw-toolbar {
   display: flex;
   flex-direction: row;
-  margin: 0;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {
+  border: none;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
+  border: none;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {
+  border: none;
 }

@@ -41,7 +41,7 @@ const DrawingControl: React.FC = () => {
         };
     }, [map]);
 
-    return <div ref={drawControlRef} className="drawing-control-container" />;
+    return <div ref={drawControlRef} />;
 };
 
 export default DrawingControl;
