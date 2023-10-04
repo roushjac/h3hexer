@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, LayersControl } from 'react-leaflet';
 import React, { useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fileContentState } from './state/fileContentState';
@@ -33,8 +33,14 @@ const App: React.FC = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <ToolComponents />
-                <FileContentLayer />
-                <HexagonLayer />
+                <LayersControl position="bottomright">
+                    <LayersControl.Overlay checked name="Hexagons">
+                        <HexagonLayer />
+                    </LayersControl.Overlay>
+                    <LayersControl.Overlay checked name="File Content">
+                        <FileContentLayer />
+                    </LayersControl.Overlay>
+                </LayersControl>
             </MapContainer>
         </div>
     );
