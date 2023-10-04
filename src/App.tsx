@@ -7,6 +7,7 @@ import { geoJsonToh3PolygonFeatures } from './utils/h3';
 import HexagonLayer from './components/HexagonLayer';
 import ToolComponents from './components/ControlsContainer';
 import './App.css';
+import FileContentLayer from './components/FileContentLayer';
 
 const App: React.FC = () => {
     const fileContent = useRecoilValue(fileContentState);
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <ToolComponents />
+                <FileContentLayer />
                 <HexagonLayer />
             </MapContainer>
         </div>
