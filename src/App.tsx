@@ -33,7 +33,7 @@ const App: React.FC = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <ToolComponents />
-                <LayersControl position="bottomright">
+                <LayersControl position="topleft">
                     <LayersControl.Overlay checked name="Hexagons">
                         <HexagonLayer />
                     </LayersControl.Overlay>

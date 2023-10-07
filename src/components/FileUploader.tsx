@@ -19,6 +19,9 @@ const FileUploader: React.FC = () => {
             // Prevent automatic upload by returning false
             return false;
         },
+        onRemove: () => {
+            setFileContent(null);
+        },
         onChange(info: any) {
             if (info.file.status === 'done') {
                 message.success(`${info.file.name} file uploaded successfully`);
