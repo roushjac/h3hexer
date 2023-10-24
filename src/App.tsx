@@ -4,6 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fileContentState } from './state/fileContentState';
 import { hexPolygonsState } from './state/hexPolygonsState';
 import { geoJsonToh3PolygonFeatures } from './utils/h3';
+import { mergeObjects } from './utils/mergeObjects';
 import HexagonLayer from './components/HexagonLayer';
 import ToolComponents from './components/ControlsContainer';
 import './App.css';
@@ -17,8 +18,14 @@ const App: React.FC = () => {
         if (fileContent) {
             fileContent.map((fObj) => {
                 const h3Polygons = geoJsonToh3PolygonFeatures(fObj.content, 9);
-                // TODO update setHexData to combine properties if hexes are the same
-                setHexData(h3Polygons);
+                if (fileContent.length == 1) {
+                    setHexData(h3Polygons);
+                } else {
+                    // two or more layers, merge the hexed result
+                    setHexData((prevh3Polys) =>
+                        mergeObjects([prevh3Polys, h3Polygons], 'h3_index')
+                    );
+                }
             });
         }
     }, [fileContent]);
@@ -40,9 +47,7 @@ const App: React.FC = () => {
                     <LayersControl.Overlay checked name="Hexagons">
                         <HexagonLayer />
                     </LayersControl.Overlay>
-                    <LayersControl.Overlay checked name="File Content">
-                        <FileContentLayer />
-                    </LayersControl.Overlay>
+                    <FileContentLayer />
                 </LayersControl>
             </MapContainer>
         </div>

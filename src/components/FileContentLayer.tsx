@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { fileContentState } from '../state/fileContentState';
-import { GeoJSON } from 'react-leaflet';
+import { GeoJSON, LayersControl } from 'react-leaflet';
 import { GeoJsonObject } from 'geojson';
 
 const FileContentLayer: React.FC = () => {
@@ -22,12 +22,20 @@ const FileContentLayer: React.FC = () => {
         <>
             {fileContent.map((fileObj, index) => {
                 const fileContentFeatures = JSON.parse(fileObj.content);
+                const layerName =
+                    fileContentFeatures.name || `File Content ${index + 1}`; // Use name from GeoJSON or default to "File Content N"
                 return (
-                    <GeoJSON
-                        key={`geojson-layer-${index}`}
-                        data={fileContentFeatures as GeoJsonObject}
-                        onEachFeature={onEachFeature}
-                    />
+                    <LayersControl.Overlay
+                        key={`overlay-${index}`}
+                        checked
+                        name={layerName}
+                    >
+                        <GeoJSON
+                            key={`geojson-layer-${index}`}
+                            data={fileContentFeatures as GeoJsonObject}
+                            onEachFeature={onEachFeature}
+                        />
+                    </LayersControl.Overlay>
                 );
             })}
         </>
