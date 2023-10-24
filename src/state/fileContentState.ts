@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const fileContentState = atom<any>({
+export const fileContentState = atom<{ id: string; content: string }[]>({
     key: 'fileContentState',
-    default: null // Initialize with no file content
+    default: [] // Initialize empty list with no files
 });

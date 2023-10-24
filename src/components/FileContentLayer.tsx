@@ -7,8 +7,6 @@ import { GeoJsonObject } from 'geojson';
 const FileContentLayer: React.FC = () => {
     const fileContent = useRecoilValue(fileContentState);
 
-    const fileContentFeatures = fileContent && JSON.parse(fileContent);
-
     const onEachFeature = (feature: any, layer: any) => {
         if (feature.properties) {
             const popupContent = `<pre>${JSON.stringify(
@@ -20,16 +18,19 @@ const FileContentLayer: React.FC = () => {
         }
     };
 
-    console.log('uploaded file content: ', fileContentFeatures);
-
     return (
-        fileContentFeatures && (
-            <GeoJSON
-                key="hex-polygon-features"
-                data={fileContentFeatures as GeoJsonObject}
-                onEachFeature={onEachFeature}
-            />
-        )
+        <>
+            {fileContent.map((fileObj, index) => {
+                const fileContentFeatures = JSON.parse(fileObj.content);
+                return (
+                    <GeoJSON
+                        key={`geojson-layer-${index}`}
+                        data={fileContentFeatures as GeoJsonObject}
+                        onEachFeature={onEachFeature}
+                    />
+                );
+            })}
+        </>
     );
 };
 

@@ -15,8 +15,11 @@ const App: React.FC = () => {
 
     useEffect(() => {
         if (fileContent) {
-            const h3Polygons = geoJsonToh3PolygonFeatures(fileContent, 9);
-            setHexData(h3Polygons);
+            fileContent.map((fObj) => {
+                const h3Polygons = geoJsonToh3PolygonFeatures(fObj.content, 9);
+                // TODO update setHexData to combine properties if hexes are the same
+                setHexData(h3Polygons);
+            });
         }
     }, [fileContent]);
 
