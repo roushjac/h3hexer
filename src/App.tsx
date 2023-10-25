@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, LayersControl } from 'react-leaflet';
 import React, { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { fileContentState } from './state/fileContentState';
 import { hexPolygonsState } from './state/hexPolygonsState';
+import { shouldProcessState } from './state/shouldProcessState';
 import { geoJsonToh3PolygonFeatures } from './utils/h3';
 import { mergeGeoJsonObjects } from './utils/mergeObjects';
 import HexagonLayer from './components/HexagonLayer';
@@ -10,29 +11,35 @@ import ToolComponents from './components/ControlsContainer';
 import './App.css';
 import FileContentLayer from './components/FileContentLayer';
 import { fileContentObject } from './types/fileContent';
+import { message } from 'antd';
 
 const App: React.FC = () => {
     const fileContent = useRecoilValue(fileContentState);
     const setHexData = useSetRecoilState(hexPolygonsState);
+    const [shouldProcess, setShouldProcess] = useRecoilState(shouldProcessState);
 
     useEffect(() => {
-        if (fileContent.length >= 1) {
-            const newestFileContent = fileContent.at(-1) as fileContentObject;
-            const h3Polygons = geoJsonToh3PolygonFeatures(
-                newestFileContent.content,
-                9
-            );
-            if (fileContent.length == 1) {
+        if (shouldProcess) {
+            // reset hexes when pushing "Go"
+            setHexData(null);
+            if (fileContent.length >= 1) {
+                const firstFileContent = fileContent[0] as fileContentObject;
+                let h3Polygons = geoJsonToh3PolygonFeatures(firstFileContent.content, 9);
+                // initialize hexData as the result of hexing the first file
                 setHexData(h3Polygons);
+                // iteratively merge the following datasets onto the first
+                for (let i = 1; i < fileContent.length; i++) {
+                    h3Polygons = geoJsonToh3PolygonFeatures(fileContent[i].content, 9);
+                    // prevh3Polys guaranteed to be non-null because hexData will always be populated in this condition
+                    setHexData((prevh3Polys: any) => mergeGeoJsonObjects(prevh3Polys, h3Polygons, 'h3Index'));
+                }
             } else {
-                // two or more layers, merge the hexed result
-                // prevh3Polys guaranteed to be non-null because hexData will always be populated in this condition
-                setHexData((prevh3Polys: any) =>
-                    mergeGeoJsonObjects(prevh3Polys, h3Polygons, 'h3Index')
-                );
+                message.warning('No input files', 3);
             }
+            // reset processing state
+            setShouldProcess(false);
         }
-    }, [fileContent]);
+    }, [fileContent, shouldProcess]);
 
     return (
         <div className="map-wrapper">

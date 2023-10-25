@@ -1,16 +1,11 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { useSetRecoilState, useRecoilCallback } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { fileContentState } from '../state/fileContentState';
 
 const FileUploader: React.FC = () => {
     const setFileContent = useSetRecoilState(fileContentState);
-
-    const logState = useRecoilCallback(({ snapshot }) => () => {
-        console.log('State: ', snapshot.getLoadable(fileContentState).contents);
-    });
-    logState();
 
     const props = {
         beforeUpload: (file: any) => {
