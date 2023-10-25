@@ -61,13 +61,10 @@ export function mergeGeoJsonObjects(
 ): GeoJson {
     const firstFeatures = fc1.features;
     const secondFeatures = fc2.features;
-    console.log('first', firstFeatures);
-    console.log('second', secondFeatures);
     const mergedFeatures = mergeArrayOfGeoJsonFeatures(
         firstFeatures.concat(secondFeatures),
         mergeKey
     );
-    console.log('merged', mergedFeatures);
     return {
         type: 'FeatureCollection',
         features: mergedFeatures
