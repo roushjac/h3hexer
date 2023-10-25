@@ -32,8 +32,6 @@ const HexagonLayer: React.FC = () => {
         }
     };
 
-    console.log('hex polys: ', hexPolygonFeatures);
-
     return (
         hexPolygonFeatures && (
             <GeoJSON

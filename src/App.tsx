@@ -4,29 +4,33 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fileContentState } from './state/fileContentState';
 import { hexPolygonsState } from './state/hexPolygonsState';
 import { geoJsonToh3PolygonFeatures } from './utils/h3';
-import { mergeObjects } from './utils/mergeObjects';
+import { mergeGeoJsonObjects } from './utils/mergeObjects';
 import HexagonLayer from './components/HexagonLayer';
 import ToolComponents from './components/ControlsContainer';
 import './App.css';
 import FileContentLayer from './components/FileContentLayer';
+import { fileContentObject } from './types/fileContent';
 
 const App: React.FC = () => {
     const fileContent = useRecoilValue(fileContentState);
     const setHexData = useSetRecoilState(hexPolygonsState);
 
     useEffect(() => {
-        if (fileContent) {
-            fileContent.map((fObj) => {
-                const h3Polygons = geoJsonToh3PolygonFeatures(fObj.content, 9);
-                if (fileContent.length == 1) {
-                    setHexData(h3Polygons);
-                } else {
-                    // two or more layers, merge the hexed result
-                    setHexData((prevh3Polys) =>
-                        mergeObjects([prevh3Polys, h3Polygons], 'h3_index')
-                    );
-                }
-            });
+        if (fileContent.length >= 1) {
+            const newestFileContent = fileContent.at(-1) as fileContentObject;
+            const h3Polygons = geoJsonToh3PolygonFeatures(
+                newestFileContent.content,
+                9
+            );
+            if (fileContent.length == 1) {
+                setHexData(h3Polygons);
+            } else {
+                // two or more layers, merge the hexed result
+                // prevh3Polys guaranteed to be non-null because hexData will always be populated in this condition
+                setHexData((prevh3Polys: any) =>
+                    mergeGeoJsonObjects(prevh3Polys, h3Polygons, 'h3Index')
+                );
+            }
         }
     }, [fileContent]);
 
