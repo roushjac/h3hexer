@@ -20,18 +20,17 @@ const FileContentLayer: React.FC = () => {
 
     return (
         <>
-            {fileContent.map((fileObj, index) => {
+            {fileContent.map((fileObj) => {
                 const fileContentFeatures = JSON.parse(fileObj.content);
-                const layerName =
-                    fileContentFeatures.name || `File Content ${index + 1}`; // Use name from GeoJSON or default to "File Content N"
+                const layerName = fileObj.name;
                 return (
                     <LayersControl.Overlay
-                        key={`overlay-${index}`}
+                        key={layerName}
                         checked
                         name={layerName}
                     >
                         <GeoJSON
-                            key={`geojson-layer-${index}`}
+                            key={layerName}
                             data={fileContentFeatures as GeoJsonObject}
                             onEachFeature={onEachFeature}
                         />

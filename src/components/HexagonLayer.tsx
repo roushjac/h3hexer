@@ -16,7 +16,6 @@ const HexagonLayer: React.FC = () => {
     useEffect(() => {
         if (hexPolygonFeatures) {
             const geoJsonLayer = L.geoJSON(hexPolygonFeatures as GeoJsonObject); // Create a temporary Leaflet GeoJSON layer
-            console.log('hex geojson', geoJsonLayer);
             const bounds = geoJsonLayer.getBounds(); // Get bounds of the GeoJSON layer
             if (bounds.isValid()) {
                 map.fitBounds(bounds); // Fit map to bounds

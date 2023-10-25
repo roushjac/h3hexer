@@ -1,11 +1,16 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilCallback } from 'recoil';
 import { fileContentState } from '../state/fileContentState';
 
 const FileUploader: React.FC = () => {
     const setFileContent = useSetRecoilState(fileContentState);
+
+    const logState = useRecoilCallback(({ snapshot }) => () => {
+        console.log('State: ', snapshot.getLoadable(fileContentState).contents);
+    });
+    logState();
 
     const props = {
         beforeUpload: (file: any) => {
@@ -13,7 +18,11 @@ const FileUploader: React.FC = () => {
             reader.onload = (e) => {
                 const content = e.target?.result;
                 if (typeof content == 'string') {
-                    const fileObj = { uid: file.uid, content };
+                    const fileObj = {
+                        uid: file.uid,
+                        name: file.name,
+                        content: content
+                    };
                     // use a functional update with the spread operator to simply add in a new element
                     setFileContent((prevState) => [...prevState, fileObj]);
                 } else {
