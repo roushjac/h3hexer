@@ -12,11 +12,13 @@ import './App.css';
 import FileContentLayer from './components/FileContentLayer';
 import { fileContentObject } from './types/fileContent';
 import { message } from 'antd';
+import { hexResolutionState } from './state/hexResolutionState';
 
 const App: React.FC = () => {
     const fileContent = useRecoilValue(fileContentState);
     const setHexData = useSetRecoilState(hexPolygonsState);
     const [shouldProcess, setShouldProcess] = useRecoilState(shouldProcessState);
+    const hexResolution = useRecoilValue(hexResolutionState);
 
     useEffect(() => {
         if (shouldProcess) {
@@ -24,12 +26,12 @@ const App: React.FC = () => {
             setHexData(null);
             if (fileContent.length >= 1) {
                 const firstFileContent = fileContent[0] as fileContentObject;
-                let h3Polygons = geoJsonToh3PolygonFeatures(firstFileContent.content, 9);
+                let h3Polygons = geoJsonToh3PolygonFeatures(firstFileContent.content, hexResolution);
                 // initialize hexData as the result of hexing the first file
                 setHexData(h3Polygons);
                 // iteratively merge the following datasets onto the first
                 for (let i = 1; i < fileContent.length; i++) {
-                    h3Polygons = geoJsonToh3PolygonFeatures(fileContent[i].content, 9);
+                    h3Polygons = geoJsonToh3PolygonFeatures(fileContent[i].content, hexResolution);
                     // prevh3Polys guaranteed to be non-null because hexData will always be populated in this condition
                     setHexData((prevh3Polys: any) => mergeGeoJsonObjects(prevh3Polys, h3Polygons, 'h3Index'));
                 }
