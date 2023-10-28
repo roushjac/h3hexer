@@ -1,0 +1,9 @@
+.drawing-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.draw-clear-button {
+    margin-top: 10px;
+    margin-left: 5px;
+}
