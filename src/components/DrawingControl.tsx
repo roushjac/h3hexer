@@ -9,8 +9,12 @@ const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
 
+    const drawLayers: L.Layer[] = [];
+
     const handleClick = () => {
-        console.log('clicked');
+        while (drawLayers.length >= 1) {
+            map.removeLayer(drawLayers.pop() as L.Layer);
+        }
     };
 
     useEffect(() => {
@@ -32,10 +36,10 @@ const DrawingControl: React.FC = () => {
         }
 
         map.on(L.Draw.Event.CREATED, function (e) {
-            const layer = (e as any).layer;
+            const layer: L.Layer = (e as any).layer;
             map.addLayer(layer);
-            // const data = layer.toGeoJSON();
-            console.log(layer.toGeoJSON());
+            drawLayers.push(layer);
+            console.log((layer as any).toGeoJSON());
         });
 
         return () => {
