@@ -9,6 +9,7 @@ const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
 
+    // keep track of drawn layers so we can easily remove when clearing
     const drawLayers: L.Layer[] = [];
 
     const handleClick = () => {

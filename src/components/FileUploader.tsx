@@ -29,9 +29,7 @@ const FileUploader: React.FC = () => {
             return false;
         },
         onRemove: (file: any) => {
-            setFileContent((prevState) =>
-                prevState.filter((f) => f.uid !== file.uid)
-            ); // Remove the file object with the matching id from the fileContent array
+            setFileContent((prevState) => prevState.filter((f) => f.uid !== file.uid)); // Remove the file object with the matching id from the fileContent array
         },
         onChange(info: any) {
             if (info.file.status === 'done') {

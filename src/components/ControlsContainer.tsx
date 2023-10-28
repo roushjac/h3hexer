@@ -5,6 +5,7 @@ import DrawingControl from './DrawingControl';
 import StartButton from './StartButton';
 import FileDownloader from './FileDownloader';
 import ResolutionSlider from './ResolutionSlider';
+import APIDownloader from './APIDownloader';
 
 const ControlsContainer: React.FC<React.PropsWithChildren> = ({ children }) => {
     return <div className="container">{children}</div>;
@@ -14,6 +15,7 @@ const ToolComponents: React.FC = () => {
     return (
         <ControlsContainer>
             <FileUploader />
+            <APIDownloader />
             <DrawingControl />
             <ResolutionSlider />
             <StartButton />
