@@ -13,9 +13,12 @@ const DrawingControl: React.FC = () => {
     const drawLayers: L.Layer[] = [];
 
     const handleClick = () => {
-        while (drawLayers.length >= 1) {
-            map.removeLayer(drawLayers.pop() as L.Layer);
-        }
+        // remove all layers except base map layer
+        map.eachLayer((layer) => {
+            if (!layer.hasOwnProperty('_url')) {
+                map.removeLayer(layer);
+            }
+        });
     };
 
     useEffect(() => {
@@ -40,7 +43,6 @@ const DrawingControl: React.FC = () => {
             const layer: L.Layer = (e as any).layer;
             map.addLayer(layer);
             drawLayers.push(layer);
-            console.log((layer as any).toGeoJSON());
         });
 
         return () => {
