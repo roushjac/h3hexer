@@ -9,9 +9,6 @@ const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
 
-    // keep track of drawn layers so we can easily remove when clearing
-    const drawLayers: L.Layer[] = [];
-
     const handleClick = () => {
         // remove all layers except base map layer
         map.eachLayer((layer) => {
@@ -42,7 +39,6 @@ const DrawingControl: React.FC = () => {
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer: L.Layer = (e as any).layer;
             map.addLayer(layer);
-            drawLayers.push(layer);
         });
 
         return () => {

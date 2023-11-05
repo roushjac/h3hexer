@@ -12,9 +12,11 @@ const APIDownloader: React.FC = () => {
     };
 
     return (
-        <Button onClick={handleClick} icon={<UploadOutlined />}>
-            Get API data
-        </Button>
+        <div>
+            <Button onClick={handleClick} icon={<UploadOutlined />}>
+                Get API data
+            </Button>
+        </div>
     );
 };
 
