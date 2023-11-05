@@ -4,10 +4,13 @@ import L from 'leaflet';
 import 'leaflet-draw';
 import { Button } from 'antd';
 import '../styles/DrawingControl.css';
+import { useSetRecoilState } from 'recoil';
+import { drawnPolygonsState } from '../state/drawnPolygonsState';
 
 const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
+    const setDrawnPolygonsState = useSetRecoilState(drawnPolygonsState);
 
     const handleClick = () => {
         // remove all layers except base map layer
@@ -22,6 +25,8 @@ const DrawingControl: React.FC = () => {
         const drawControl = new L.Control.Draw({
             draw: {
                 polyline: false,
+                rectangle: false,
+                circle: false,
                 circlemarker: false,
                 marker: false
             }
@@ -38,7 +43,15 @@ const DrawingControl: React.FC = () => {
 
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer: L.Layer = (e as any).layer;
+            // console.log(Object.isExtensible(layer));
+            // setDrawnPolygonsState((prevPolys) => {
+            //     console.log(Object.isExtensible(prevPolys));
+            //     console.log(prevPolys);
+            //     return [...prevPolys, layer];
+            // });
             map.addLayer(layer);
+            console.log(layer);
+            // setDrawnPolygonsState((prevPolys => [...prevPolys, layer.toGeoJSON()]);
         });
 
         return () => {
