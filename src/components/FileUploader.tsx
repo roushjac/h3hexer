@@ -1,12 +1,12 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { fileContentState } from '../state/fileContentState';
 import '../styles/FileUploader.css'
 
 const FileUploader: React.FC = () => {
-    const setFileContent = useSetRecoilState(fileContentState);
+    const [fileContent, setFileContent] = useRecoilState(fileContentState);
 
     const props = {
         beforeUpload: (file: any) => {
@@ -38,7 +38,8 @@ const FileUploader: React.FC = () => {
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
             }
-        }
+        },
+        fileList: fileContent,
     };
 
     return (

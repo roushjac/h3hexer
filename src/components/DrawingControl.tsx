@@ -4,14 +4,19 @@ import L from 'leaflet';
 import 'leaflet-draw';
 import { Button } from 'antd';
 import '../styles/DrawingControl.css';
+import { useResetRecoilState } from 'recoil';
 // import { useSetRecoilState } from 'recoil';
 // import { drawnPolygonsState } from '../state/drawnPolygonsState';
+import { hexPolygonsState } from '../state/hexPolygonsState';
+import { fileContentState } from '../state/fileContentState';
 
 const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
-    // will use this when api requests are implemented since we need to use the drawn poly as spatial filter
+    // TODO use this when api requests are implemented since we need to use the drawn poly as spatial filter
     // const setDrawnPolygonsState = useSetRecoilState(drawnPolygonsState);
+    const resetHexPolygons = useResetRecoilState(hexPolygonsState);
+    const resetFileContents = useResetRecoilState(fileContentState);
 
     const handleClick = () => {
         // remove all layers except base map layer
@@ -20,6 +25,9 @@ const DrawingControl: React.FC = () => {
                 map.removeLayer(layer);
             }
         });
+        // reset states of hexagon layer and all file contents
+        resetHexPolygons();
+        resetFileContents();
     };
 
     useEffect(() => {
