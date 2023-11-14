@@ -11,7 +11,7 @@ const APIDownloader: React.FC = () => {
     const drawnPolygons = useRecoilValue(drawnPolygonsState);
 
     const handleClick = () => {
-        message.info('wire me!');
+        message.info('not implemented - wire me!');
         console.log(drawnPolygons);
     };
 
