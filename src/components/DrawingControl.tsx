@@ -4,13 +4,14 @@ import L from 'leaflet';
 import 'leaflet-draw';
 import { Button } from 'antd';
 import '../styles/DrawingControl.css';
-import { useSetRecoilState } from 'recoil';
-import { drawnPolygonsState } from '../state/drawnPolygonsState';
+// import { useSetRecoilState } from 'recoil';
+// import { drawnPolygonsState } from '../state/drawnPolygonsState';
 
 const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
-    const setDrawnPolygonsState = useSetRecoilState(drawnPolygonsState);
+    // will use this when api requests are implemented since we need to use the drawn poly as spatial filter
+    // const setDrawnPolygonsState = useSetRecoilState(drawnPolygonsState);
 
     const handleClick = () => {
         // remove all layers except base map layer

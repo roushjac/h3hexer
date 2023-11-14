@@ -41,7 +41,7 @@ const App: React.FC = () => {
             // reset processing state
             setShouldProcess(false);
         }
-    }, [fileContent, shouldProcess]);
+    }, [fileContent, shouldProcess, hexResolution, setHexData, setShouldProcess]);
 
     return (
         <div className="map-wrapper">
