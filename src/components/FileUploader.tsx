@@ -3,6 +3,7 @@ import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useSetRecoilState } from 'recoil';
 import { fileContentState } from '../state/fileContentState';
+import '../styles/FileUploader.css'
 
 const FileUploader: React.FC = () => {
     const setFileContent = useSetRecoilState(fileContentState);
@@ -29,9 +30,7 @@ const FileUploader: React.FC = () => {
             return false;
         },
         onRemove: (file: any) => {
-            setFileContent((prevState) =>
-                prevState.filter((f) => f.uid !== file.uid)
-            ); // Remove the file object with the matching id from the fileContent array
+            setFileContent((prevState) => prevState.filter((f) => f.uid !== file.uid)); // Remove the file object with the matching id from the fileContent array
         },
         onChange(info: any) {
             if (info.file.status === 'done') {

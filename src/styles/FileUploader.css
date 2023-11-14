@@ -1,0 +1,11 @@
+div.ant-upload{
+    width: 100%;
+}
+
+span.ant-upload{
+    display: block;
+}
+
+button.ant-btn{
+    width: 100%;
+}
