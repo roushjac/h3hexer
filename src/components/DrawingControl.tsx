@@ -43,15 +43,8 @@ const DrawingControl: React.FC = () => {
 
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer: L.Layer = (e as any).layer;
-            // console.log(Object.isExtensible(layer));
-            // setDrawnPolygonsState((prevPolys) => {
-            //     console.log(Object.isExtensible(prevPolys));
-            //     console.log(prevPolys);
-            //     return [...prevPolys, layer];
-            // });
             map.addLayer(layer);
             console.log(layer);
-            // setDrawnPolygonsState((prevPolys => [...prevPolys, layer.toGeoJSON()]);
         });
 
         return () => {

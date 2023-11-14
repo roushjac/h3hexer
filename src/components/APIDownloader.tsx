@@ -17,7 +17,7 @@ const APIDownloader: React.FC = () => {
 
     return (
         <div>
-            <Button onClick={handleClick} icon={<UploadOutlined />}>
+            <Button onClick={handleClick} icon={<UploadOutlined />} style={{width: '100%'}}>
                 Get API data
             </Button>
         </div>
