@@ -1,11 +1,35 @@
 import React from "react";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import "../styles/ExampleButton.css"
+import { gjsonExample } from "../data/gjsonExample";
+import { useSetRecoilState } from "recoil";
+import { fileContentState } from "../state/fileContentState";
+import { useMap } from "react-leaflet";
+import L from 'leaflet';
+import { GeoJsonObject } from 'geojson';
+import { hexResolutionState } from "../state/hexResolutionState";
 
 const ShowExampleButton: React.FC = () => {
 
+    const setFileContent = useSetRecoilState(fileContentState);
+    const setHexResolution = useSetRecoilState(hexResolutionState);
+
+    const map = useMap();
+
     const handleClick = () => {
-        message.info("show example polys")
+        setFileContent([{
+            uid: '123test123',
+            name: 'example',
+            content: JSON.stringify(gjsonExample)
+        }])
+        // change map bounds to example data
+        const geoJsonLayer = L.geoJSON(gjsonExample as GeoJsonObject); // Create a temporary Leaflet GeoJSON layer
+        const bounds = geoJsonLayer.getBounds(); // Get bounds of the GeoJSON layer
+        if (bounds.isValid()) {
+            map.fitBounds(bounds); // Fit map to bounds
+        }
+        // hardcode res here to match size of example data
+        setHexResolution(10);
     };
 
     return (

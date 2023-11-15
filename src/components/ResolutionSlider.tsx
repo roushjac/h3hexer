@@ -20,7 +20,7 @@ const ResolutionSlider: React.FC = () => {
             onMouseEnter={() => map.dragging.disable()}
             onMouseLeave={() => map.dragging.enable()}
         >
-            <span className="slider-title">H3 resolution:</span>
+            <span className="slider-title">H3 resolution: ({hexResolution})</span>
             <Slider min={0} max={15} value={hexResolution} onChange={handleChange} className="resolution-slider" />
         </div>
     );
