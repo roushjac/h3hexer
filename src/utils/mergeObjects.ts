@@ -9,50 +9,43 @@ function mergeArrayOfGeoJsonFeatures(
     arr: Array<Feature>,
     mergeKey: string
 ): Array<Feature> {
-    // Create a map to hold merged features, keyed by the value of the mergeKey.
     const mergedFeaturesMap: { [key: string]: Feature } = {};
 
     arr.forEach((feature) => {
-        // Get the merge key value for the current feature
         const keyVal = feature.properties[mergeKey];
 
         if (mergedFeaturesMap[keyVal]) {
-            // If a feature with this merge key value already exists, merge properties
             for (const propKey in feature.properties) {
-                if (feature.properties.hasOwnProperty(propKey)) {
-                    if (propKey !== mergeKey) {
-                        if (!mergedFeaturesMap[keyVal].properties[propKey]) {
-                            // If the property doesn't exist on the merged feature yet, create it
-                            mergedFeaturesMap[keyVal].properties[propKey] =
-                                feature.properties[propKey];
-                        } else if (
-                            Array.isArray(
-                                mergedFeaturesMap[keyVal].properties[propKey]
-                            )
-                        ) {
-                            // If it's already an array, append the new value
-                            mergedFeaturesMap[keyVal].properties[propKey].push(
-                                feature.properties[propKey]
-                            );
-                        } else {
-                            // Otherwise, create an array containing both the old and new values
-                            mergedFeaturesMap[keyVal].properties[propKey] = [
-                                mergedFeaturesMap[keyVal].properties[propKey],
-                                feature.properties[propKey]
-                            ];
+                if (feature.properties.hasOwnProperty(propKey) && propKey !== mergeKey) {
+                    const existingValue = mergedFeaturesMap[keyVal].properties[propKey];
+                    const newValue = feature.properties[propKey];
+                    if (existingValue === undefined) {
+                        mergedFeaturesMap[keyVal].properties[propKey] = newValue;
+                    } else if (Array.isArray(existingValue)) {
+                        if (Array.isArray(newValue)) {
+                            // Flatten and deduplicate arrays
+                            newValue.forEach(item => {
+                                if (!existingValue.includes(item)) {
+                                    existingValue.push(item);
+                                }
+                            });
+                        } else if (!existingValue.includes(newValue)) {
+                            existingValue.push(newValue);
                         }
+                    } else if (existingValue !== newValue) {
+                        // Convert to array and merge
+                        mergedFeaturesMap[keyVal].properties[propKey] = [existingValue].concat(newValue instanceof Array ? newValue : [newValue]);
                     }
                 }
             }
         } else {
-            // If it's the first feature with this merge key value, just store it in the map
             mergedFeaturesMap[keyVal] = JSON.parse(JSON.stringify(feature));
         }
     });
 
-    // Convert the map values to an array and return it
     return Object.values(mergedFeaturesMap);
 }
+
 
 export function mergeGeoJsonObjects(
     fc1: GeoJson,
