@@ -12,7 +12,7 @@ const content = (
 
 const WhatIsThis: React.FC = () => (
     <Popover content={content} title="h3hexer">
-        <Button type="primary">What is this?</Button>
+        <Button type="dashed">What is this?</Button>
     </Popover>
 );
 

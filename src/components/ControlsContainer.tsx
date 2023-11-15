@@ -1,5 +1,6 @@
 import React from 'react';
 import WhatIsThis from './WhatIsThis';
+import ShowExampleButton from './ShowExample';
 import FileUploader from './FileUploader';
 import '../styles/ControlsContainer.css';
 import DrawingControl from './DrawingControl';
@@ -16,6 +17,7 @@ const ToolComponents: React.FC = () => {
     return (
         <ControlsContainer>
             <WhatIsThis />
+            <ShowExampleButton />
             <FileUploader />
             <APIDownloader />
             <DrawingControl />
