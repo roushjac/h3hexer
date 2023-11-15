@@ -18,8 +18,8 @@ const ShowExampleButton: React.FC = () => {
 
     const handleClick = () => {
         setFileContent([{
-            uid: '123test123',
-            name: 'example',
+            uid: '123example123',
+            name: 'Example',
             content: JSON.stringify(gjsonExample2)
         }])
         // change map bounds to example data

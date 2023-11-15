@@ -16,9 +16,7 @@ const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem => {
     const mergedPropertiesMap: H3DataItem = {};
     const processedH3Indexes = new Set<string>();
 
-    console.log(geoJsonStr);
     const geoJson: GeoJson = JSON.parse(geoJsonStr);
-    console.log(geoJson);
     geoJson.features.forEach((feature) => {
         const coordinates = feature.geometry.coordinates;
         const h3Indexes = h3.polygonToCells(coordinates, res, true);
@@ -55,7 +53,6 @@ const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem => {
             }
         }
     });
-    console.log(mergedPropertiesMap);
     return mergedPropertiesMap;
 };
 

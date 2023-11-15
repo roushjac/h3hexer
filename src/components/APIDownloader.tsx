@@ -11,12 +11,12 @@ const APIDownloader: React.FC = () => {
     // const drawnPolygons = useRecoilValue(drawnPolygonsState);
 
     const handleClick = () => {
-        message.info('not implemented - wire me!');
+        message.info('Component under construction - coming soon!');
     };
 
     return (
         <div>
-            <Button onClick={handleClick} icon={<UploadOutlined />} style={{width: '100%'}}>
+            <Button onClick={handleClick} icon={<UploadOutlined />} style={{width: '100%', marginTop: '10px'}}>
                 Get API data
             </Button>
         </div>
