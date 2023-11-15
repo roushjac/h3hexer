@@ -6,6 +6,7 @@ interface H3DataItem {
     properties: Record<string, any>;
 }
 
+
 /**
  * Get an array of objects where each object represents a GeoJSON feature
  * and contains its properties and H3 indexes that fill it.
@@ -15,15 +16,60 @@ interface H3DataItem {
  * @returns {H3DataItem[]} - The array of objects
  */
 const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem[] => {
+    // Create a map to hold merged features, keyed by the value of the mergeKey.
+    const mergedPropertiesMap: { [key: string]: { [nestedKey: string]: string | string[] } } = {};
+
     const geoJson: GeoJson = JSON.parse(geoJsonStr);
-    return geoJson.features.map((feature) => {
+    geoJson.features.forEach((feature) => {
         const coordinates = feature.geometry.coordinates;
         const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
-        return {
-            h3Indexes,
-            properties: feature.properties
-        };
-    });
+        for (const h3Index in h3Indexes) {
+            if (mergedPropertiesMap[h3Index]) {
+                for (const propKey in feature.properties) {
+                    if (feature.properties.hasOwnProperty(propKey)) {
+                        if (!mergedPropertiesMap[h3Index].hasOwnProperty(propKey)) {
+                            // If the property doesn't exist on the merged hex yet, create it
+                            mergedPropertiesMap[h3Index][propKey] =
+                                feature.properties[propKey];
+                        } else if (
+                            Array.isArray(
+                                mergedPropertiesMap[h3Index][propKey]
+                            )
+                        ) {
+                            // If it's already an array, append the new value
+                            (mergedPropertiesMap[h3Index][propKey] as string[]).push(
+                                feature.properties[propKey]
+                            );
+                        } else {
+                            // Otherwise, create an array containing both the old and new values
+                            mergedPropertiesMap[h3Index][propKey] = [
+                                mergedPropertiesMap[h3Index][propKey],
+                                feature.properties[propKey]
+                            ];
+                        }
+                    }
+                }
+            } else {
+                // no h3 index yet, just store it in the map
+                mergedPropertiesMap[h3Index] = feature.properties;
+            }
+        }
+    }
+
+
+
+
+
+
+    // const geoJson: GeoJson = JSON.parse(geoJsonStr);
+    // return geoJson.features.map((feature) => {
+    //     const coordinates = feature.geometry.coordinates;
+    //     const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
+    //     return {
+    //         h3Indexes,
+    //         properties: feature.properties
+    //     };
+    // });
 };
 
 /**
@@ -69,5 +115,6 @@ export const geoJsonToh3PolygonFeatures = (
     res: number
 ): GeoJson => {
     const h3Items: H3DataItem[] = geoJsonToH3Data(geoJsonStr, res);
+    console.log(h3Items);
     return h3DataToGeoJson(h3Items);
 };
