@@ -53,7 +53,6 @@ const DrawingControl: React.FC = () => {
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer: L.Layer = (e as any).layer;
             map.addLayer(layer);
-            console.log(layer);
         });
 
         return () => {
