@@ -1,25 +1,26 @@
 import * as h3 from 'h3-js';
 import { Feature, GeoJson } from '../types/geojson';
 
-interface H3DataItem {
-    h3Indexes: string[];
-    properties: Record<string, any>;
-}
+type H3DataItem ={ [h3Index: string]: { [nestedProperty: string]: string | string[] } }
 
 
 /**
  * Get an array of objects where each object represents a GeoJSON feature
  * and contains its properties and H3 indexes that fill it.
+ * Features within the GeoJSON that overlap will have the properties merged into a single hex.
  *
  * @param {string} geoJsonStr - The GeoJSON string
  * @param {number} res - The H3 resolution
- * @returns {H3DataItem[]} - The array of objects
+ * @returns {H3DataItem} - The map of h3 indexes to their properties
  */
-const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem[] => {
+const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem => {
     // Create a map to hold merged features, keyed by the value of the mergeKey.
-    const mergedPropertiesMap: { [key: string]: { [nestedKey: string]: string | string[] } } = {};
+    const mergedPropertiesMap: H3DataItem = {};
 
+    console.log(geoJsonStr);
+    // TODO why is this parsing the string with a bunch of extra props??
     const geoJson: GeoJson = JSON.parse(geoJsonStr);
+    console.log(geoJson);
     geoJson.features.forEach((feature) => {
         const coordinates = feature.geometry.coordinates;
         const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
@@ -54,52 +55,33 @@ const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem[] => {
                 mergedPropertiesMap[h3Index] = feature.properties;
             }
         }
-    }
-
-
-
-
-
-
-    // const geoJson: GeoJson = JSON.parse(geoJsonStr);
-    // return geoJson.features.map((feature) => {
-    //     const coordinates = feature.geometry.coordinates;
-    //     const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
-    //     return {
-    //         h3Indexes,
-    //         properties: feature.properties
-    //     };
-    // });
+    });
+    return mergedPropertiesMap
 };
 
 /**
  * Transform the H3 data objects to a new GeoJSON object.
  *
- * @param {H3DataItem[]} h3Data - The H3 data from geoJsonToH3Data
+ * @param {H3DataItem} h3Data - The H3 data from geoJsonToH3Data
  * @returns {GeoJson} - The new GeoJSON object
  */
-const h3DataToGeoJson = (h3Data: H3DataItem[]): GeoJson => {
+const h3DataToGeoJson = (h3Data: H3DataItem): GeoJson => {
     const newFeatures: Feature[] = [];
-
-    h3Data.forEach((data) => {
-        const { h3Indexes, properties } = data;
-        h3Indexes.forEach((h3Index) => {
-            const boundary = h3.cellToBoundary(h3Index, true); // true for GeoJSON format ([lng, lat])
-            const polygon: Feature = {
-                type: 'Feature',
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [boundary]
-                },
-                properties: {
-                    ...properties,
-                    h3Index
-                }
-            };
-            newFeatures.push(polygon);
-        });
-    });
-
+    for (const [h3Index, properties] of Object.entries(h3Data)) {
+        const boundary = h3.cellToBoundary(h3Index, true); // true for GeoJSON format ([lng, lat])
+        const polygon: Feature = {
+            type: 'Feature',
+            geometry: {
+                type: 'Polygon',
+                coordinates: [boundary]
+            },
+            properties: {
+                ...properties,
+                h3Index
+            }
+        };
+        newFeatures.push(polygon);
+    }
     return {
         type: 'FeatureCollection',
         features: newFeatures
@@ -114,7 +96,6 @@ export const geoJsonToh3PolygonFeatures = (
     geoJsonStr: string,
     res: number
 ): GeoJson => {
-    const h3Items: H3DataItem[] = geoJsonToH3Data(geoJsonStr, res);
-    console.log(h3Items);
+    const h3Items: H3DataItem = geoJsonToH3Data(geoJsonStr, res);
     return h3DataToGeoJson(h3Items);
 };
