@@ -3,10 +3,9 @@ import { Feature, GeoJson } from '../types/geojson';
 
 type H3DataItem ={ [h3Index: string]: { [nestedProperty: string]: string | string[] } }
 
-
 /**
- * Get an array of objects where each object represents a GeoJSON feature
- * and contains its properties and H3 indexes that fill it.
+ * Get an object where each key is an h3Index string
+ * and the properties of all features that index into the hex.
  * Features within the GeoJSON that overlap will have the properties merged into a single hex.
  *
  * @param {string} geoJsonStr - The GeoJSON string
@@ -14,49 +13,50 @@ type H3DataItem ={ [h3Index: string]: { [nestedProperty: string]: string | strin
  * @returns {H3DataItem} - The map of h3 indexes to their properties
  */
 const geoJsonToH3Data = (geoJsonStr: string, res: number): H3DataItem => {
-    // Create a map to hold merged features, keyed by the value of the mergeKey.
     const mergedPropertiesMap: H3DataItem = {};
+    const processedH3Indexes = new Set<string>();
 
     console.log(geoJsonStr);
-    // TODO why is this parsing the string with a bunch of extra props??
     const geoJson: GeoJson = JSON.parse(geoJsonStr);
     console.log(geoJson);
     geoJson.features.forEach((feature) => {
         const coordinates = feature.geometry.coordinates;
-        const h3Indexes = h3.polygonToCells(coordinates, res, true); // Assuming GeoJSON format ([lng, lat])
-        for (const h3Index in h3Indexes) {
-            if (mergedPropertiesMap[h3Index]) {
+        const h3Indexes = h3.polygonToCells(coordinates, res, true);
+        for (const h3Index of h3Indexes) {
+            if (processedH3Indexes.has(h3Index)) {
+                if (!mergedPropertiesMap[h3Index]) {
+                    mergedPropertiesMap[h3Index] = {};
+                }
                 for (const propKey in feature.properties) {
                     if (feature.properties.hasOwnProperty(propKey)) {
-                        if (!mergedPropertiesMap[h3Index].hasOwnProperty(propKey)) {
-                            // If the property doesn't exist on the merged hex yet, create it
-                            mergedPropertiesMap[h3Index][propKey] =
-                                feature.properties[propKey];
-                        } else if (
-                            Array.isArray(
-                                mergedPropertiesMap[h3Index][propKey]
-                            )
-                        ) {
-                            // If it's already an array, append the new value
-                            (mergedPropertiesMap[h3Index][propKey] as string[]).push(
-                                feature.properties[propKey]
-                            );
-                        } else {
-                            // Otherwise, create an array containing both the old and new values
-                            mergedPropertiesMap[h3Index][propKey] = [
-                                mergedPropertiesMap[h3Index][propKey],
-                                feature.properties[propKey]
-                            ];
+                        const existingValue = mergedPropertiesMap[h3Index][propKey];
+                        const newValue = feature.properties[propKey];
+                        if (existingValue === undefined) {
+                            mergedPropertiesMap[h3Index][propKey] = newValue;
+                        } else if (Array.isArray(existingValue)) {
+                            if (Array.isArray(newValue)) {
+                                // Merge and deduplicate arrays
+                                newValue.forEach(item => {
+                                    if (!existingValue.includes(item)) {
+                                        existingValue.push(item);
+                                    }
+                                });
+                            } else if (!existingValue.includes(newValue)) {
+                                existingValue.push(newValue);
+                            }
+                        } else if (existingValue !== newValue) {
+                            mergedPropertiesMap[h3Index][propKey] = [existingValue].concat(newValue instanceof Array ? newValue : [newValue]);
                         }
                     }
                 }
             } else {
-                // no h3 index yet, just store it in the map
-                mergedPropertiesMap[h3Index] = feature.properties;
+                mergedPropertiesMap[h3Index] = { ...feature.properties };
+                processedH3Indexes.add(h3Index);
             }
         }
     });
-    return mergedPropertiesMap
+    console.log(mergedPropertiesMap);
+    return mergedPropertiesMap;
 };
 
 /**
@@ -96,6 +96,6 @@ export const geoJsonToh3PolygonFeatures = (
     geoJsonStr: string,
     res: number
 ): GeoJson => {
-    const h3Items: H3DataItem = geoJsonToH3Data(geoJsonStr, res);
-    return h3DataToGeoJson(h3Items);
+    const h3Item: H3DataItem = geoJsonToH3Data(geoJsonStr, res);
+    return h3DataToGeoJson(h3Item);
 };

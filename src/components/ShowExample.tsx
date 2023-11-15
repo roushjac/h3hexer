@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import "../styles/ExampleButton.css"
-import { gjsonExample } from "../data/gjsonExample";
+import { gjsonExample2 } from "../data/gjsonExample";
 import { useSetRecoilState } from "recoil";
 import { fileContentState } from "../state/fileContentState";
 import { useMap } from "react-leaflet";
@@ -20,10 +20,10 @@ const ShowExampleButton: React.FC = () => {
         setFileContent([{
             uid: '123test123',
             name: 'example',
-            content: JSON.stringify(gjsonExample)
+            content: JSON.stringify(gjsonExample2)
         }])
         // change map bounds to example data
-        const geoJsonLayer = L.geoJSON(gjsonExample as GeoJsonObject); // Create a temporary Leaflet GeoJSON layer
+        const geoJsonLayer = L.geoJSON(gjsonExample2 as GeoJsonObject); // Create a temporary Leaflet GeoJSON layer
         const bounds = geoJsonLayer.getBounds(); // Get bounds of the GeoJSON layer
         if (bounds.isValid()) {
             map.fitBounds(bounds); // Fit map to bounds
