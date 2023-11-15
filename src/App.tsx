@@ -36,7 +36,7 @@ const App: React.FC = () => {
                     setHexData((prevh3Polys: any) => mergeGeoJsonObjects(prevh3Polys, h3Polygons, 'h3Index'));
                 }
             } else {
-                message.warning('No input files', 3);
+                message.warning('No valid inputs', 3);
             }
             // reset processing state
             setShouldProcess(false);

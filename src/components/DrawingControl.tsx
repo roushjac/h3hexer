@@ -64,7 +64,7 @@ const DrawingControl: React.FC = () => {
     return (
         <div className="drawing-container">
             <div ref={drawControlRef} />
-            <Button type="primary" onClick={handleClick} className="draw-clear-button">
+            <Button type="default" onClick={handleClick} className="draw-clear-button">
                 Clear
             </Button>
         </div>
