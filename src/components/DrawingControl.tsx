@@ -5,16 +5,17 @@ import 'leaflet-draw';
 import { Button } from 'antd';
 import '../styles/DrawingControl.css';
 import { useResetRecoilState } from 'recoil';
-// import { useSetRecoilState } from 'recoil';
-// import { drawnPolygonsState } from '../state/drawnPolygonsState';
+import { useSetRecoilState } from 'recoil';
 import { hexPolygonsState } from '../state/hexPolygonsState';
 import { fileContentState } from '../state/fileContentState';
+import { drawnPolygonState } from '../state/drawnPolygonsState';
+import { GeoJson } from '../types/geojson';
 
 const DrawingControl: React.FC = () => {
     const map = useMap();
     const drawControlRef = useRef<HTMLDivElement>(null);
     // TODO use this when api requests are implemented since we need to use the drawn poly as spatial filter
-    // const setDrawnPolygonsState = useSetRecoilState(drawnPolygonsState);
+    const setDrawnPolygonsState = useSetRecoilState(drawnPolygonState);
     const resetHexPolygons = useResetRecoilState(hexPolygonsState);
     const resetFileContents = useResetRecoilState(fileContentState);
 
@@ -52,7 +53,26 @@ const DrawingControl: React.FC = () => {
 
         map.on(L.Draw.Event.CREATED, function (e) {
             const layer: L.Layer = (e as any).layer;
+            if (layer instanceof L.Path) {
+                layer.setStyle({
+                    opacity: 0.1,
+                    fillOpacity: 0.1
+                });
+            }
             map.addLayer(layer);
+            const coords: number[][][] = [(layer as any)['_latlngs'][0].map((latlng: any) => [latlng.lng, latlng.lat])]
+            const geojsonFeature: GeoJson = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": coords
+                    },
+                    "properties": {}
+                }]
+            }
+            setDrawnPolygonsState(geojsonFeature);
         });
 
         return () => {
