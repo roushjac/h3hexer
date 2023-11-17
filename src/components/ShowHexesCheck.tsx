@@ -7,7 +7,6 @@ const ShowHexesCheck: React.FC = () => {
     const [showHexes, setShowHexes] = useRecoilState(showHexesState);
 
     const onChange = (e: CheckboxChangeEvent) => {
-        console.log(`checked = ${e.target.checked}`);
         setShowHexes(e.target.checked);
     };
 

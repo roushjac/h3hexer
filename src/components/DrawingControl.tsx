@@ -52,9 +52,15 @@ const DrawingControl: React.FC = () => {
         }
 
         map.on(L.Draw.Event.CREATED, function (e) {
-            const layer: any = (e as any).layer;
+            const layer: L.Layer = (e as any).layer;
+            if (layer instanceof L.Path) {
+                layer.setStyle({
+                    opacity: 0.1,
+                    fillOpacity: 0.1
+                });
+            }
             map.addLayer(layer);
-            const coords: number[][][] = [layer['_latlngs'][0].map((latlng: any) => [latlng.lng, latlng.lat])]
+            const coords: number[][][] = [(layer as any)['_latlngs'][0].map((latlng: any) => [latlng.lng, latlng.lat])]
             const geojsonFeature: GeoJson = {
                 "type": "FeatureCollection",
                 "features": [{
@@ -66,7 +72,6 @@ const DrawingControl: React.FC = () => {
                     "properties": {}
                 }]
             }
-            console.log(geojsonFeature);
             setDrawnPolygonsState(geojsonFeature);
         });
 
