@@ -25,7 +25,7 @@ const FileDownloader: React.FC = () => {
     };
 
     return (
-        <Button type="dashed" icon={<DownloadOutlined />} onClick={() => onDownload(hexPolygonFeatures as GeoJson)}>
+        <Button type="default" icon={<DownloadOutlined />} onClick={() => onDownload(hexPolygonFeatures as GeoJson)}>
             Download Hexes
         </Button>
     );
