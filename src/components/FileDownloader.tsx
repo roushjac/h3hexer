@@ -10,7 +10,7 @@ const FileDownloader: React.FC = () => {
 
     const onDownload = (geoJsonData: GeoJson | null): void => {
         if (!geoJsonData) {
-            message.warning('No data has been hexed');
+            message.warning('No data has been indexed');
             return;
         }
         const blob = new Blob([JSON.stringify(geoJsonData)], { type: 'application/json' });
