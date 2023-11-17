@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 import { GeoJson } from '../types/geojson';
 
-export const drawnPolygonsState = atom<GeoJson[]>({
+export const drawnPolygonState = atom<GeoJson|null>({
     key: 'drawnPolygonsState',
-    default: [] // Initialize empty list with no polygons
+    default: null // Initialize empty list with no polygons
 });
