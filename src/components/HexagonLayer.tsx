@@ -5,9 +5,11 @@ import { useMap, GeoJSON } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import L from 'leaflet';
 import { GeoJsonObject } from 'geojson';
+import { showHexesState } from '../state/showHexesState';
 
 const HexagonLayer: React.FC = () => {
     const hexPolygonFeatures = useRecoilValue(hexPolygonsState);
+    const showHexes: boolean = useRecoilValue(showHexesState);
 
     const map = useMap();
 
@@ -36,7 +38,7 @@ const HexagonLayer: React.FC = () => {
     };
 
     return (
-        hexPolygonFeatures && (
+        showHexes && hexPolygonFeatures && (
             <GeoJSON
                 key={geoJsonKey}
                 data={hexPolygonFeatures as GeoJsonObject}

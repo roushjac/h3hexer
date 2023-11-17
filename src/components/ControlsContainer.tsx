@@ -8,6 +8,7 @@ import StartButton from './StartButton';
 import FileDownloader from './FileDownloader';
 import ResolutionSlider from './ResolutionSlider';
 import APIDownloader from './APIDownloader';
+import ShowHexesCheck from './ShowHexesCheck';
 
 const ControlsContainer: React.FC<React.PropsWithChildren> = ({ children }) => {
     return <div className="container">{children}</div>;
@@ -22,6 +23,7 @@ const ToolComponents: React.FC = () => {
             <APIDownloader />
             <DrawingControl />
             <ResolutionSlider />
+            <ShowHexesCheck />
             <StartButton />
             <FileDownloader />
         </ControlsContainer>
